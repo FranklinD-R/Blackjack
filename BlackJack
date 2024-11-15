@@ -1,1 +1,97 @@
-print(hello)
+import random
+suits=["Hearts","Diamonds","Spades","Clubs"]
+list=["Ace","2","3","4","5","6","7","8","9","10","Jack","Queen","King"]
+deck=[(card, category) for category in suits for card in list]
+
+def drawcard(deck):
+    return deck.pop()
+
+def main():
+    print("Welcome to Blackjack!")
+    print("\nDo you need to learn how to play?")
+    print("Yes or No: ", end="")
+    answer=input().lower()
+
+    if answer=="yes":
+        instructions(answer)
+    else:
+        print("Lets get started!")
+    random.shuffle(deck)
+    play()
+
+def play():
+    playershand=[]
+    dealershand=[]
+
+    for x in range(2):
+        playershand.append(drawcard(deck))
+        dealershand.append(drawcard(deck))
+    print("\nPlayers hand: ", playershand)
+    print("You have: ",handvalue(playershand))
+    print("Hit or Stand? ", end="")
+    answer=input().lower()
+
+    while answer=="hit":
+        drawcard(deck)
+        playershand.append(drawcard(deck))
+        print("You drew: ",playershand[-1])
+        print("You have: ",handvalue(playershand))
+        if handvalue(playershand)<21:
+            print("Hit or Stand? ", end="")
+            answer=input().lower()
+        elif handvalue(playershand)==21:
+            print("Congrats! You got 21!")
+            break
+        else:
+            check(playershand, dealershand)
+            return
+    print("\nDealer's turn: ")
+    print("Dealer's hand: ",dealershand)
+    print("Dealer has: ",handvalue(dealershand))
+
+    while handvalue(dealershand)<=17:
+        drawcard(deck)
+        dealershand.append(drawcard(deck))
+        print("Dealer had less than 17 and was required to draw another card.")
+        print("You drew: ", dealershand[-1])
+        print("Dealer now has: ",handvalue(dealershand))
+    if handvalue(dealershand)>21:
+            print("The dealer has more than 21!")
+    if handvalue(dealershand)==21:
+            print("Oh no! The dealer has 21!")
+    check(playershand, dealershand)
+
+def check(playershand,dealershand):
+    phv=handvalue(playershand)
+    dhv=handvalue(playershand)
+    if phv>dhv and phv<=21:
+        print("\nCongrats! You beat the dealer!")
+    elif phv<dhv and dhv<=21:
+        print("\nOh no! You lost to the dealer! Better luck next time.")
+    elif phv>21:
+        print("\nOh no! You have more than 21! You lose!")
+    elif dhv>21:
+        print("\nThe dealer has more than 21! You win!")
+    else:
+        print("\nYou both have the same amount. No winner!")
+def cardvalues(card):
+    if card[0] in ["Jack","Queen","King"]:
+        value=10
+    elif card[0]=="Ace":
+        value=11
+    else:
+        value=int(card[0])
+    return value
+
+def handvalue(hand):
+    totalvalue=0
+    for card in hand:
+        totalvalue+=cardvalues(card)
+    return totalvalue
+
+def instructions(answer):
+    print("You begin by recieving two cards. Your goal is to get as close to 21, but remember, don't go over!")
+    print("You have the choice to either draw another card or not.")
+    print("If you are closer to 21 than the dealer, you win! However, if you go over 21 or the dealer is closer, you lose! ")
+    print("Have fun!")
+main()
