@@ -30,11 +30,11 @@ def play():
     print("You have: ",handvalue(playershand))
     answer=""
     if handvalue(playershand)==21:
-        print("Wow! Lucky! No need to hit!")
+        input("Wow! Lucky! No need to hit! Press Enter to see the dealers hand!")
     else:
         print("Hit or Stand? ", end="")
         answer=input().lower()
-        while answer!="hit" or answer!="stand":
+        while answer!="hit" and answer!="stand":
             print("Make sure you type properly. Hit or Stand? ", end="")
             answer = input().lower()
 
@@ -97,7 +97,8 @@ def handvalue(hand):
     for card in hand:
         totalvalue+=cardvalues(card)
     return totalvalue
-
+#def adjust_for_ace():
+    #if handvalue()==21 and
 def instructions():
     print("\nYou begin by receiving two cards. Your goal is to get as close to 21, but remember, don't go over!")
     print("You have the choice to either draw another card or not.")
@@ -109,3 +110,4 @@ def instructions():
     input()
     print("Have fun!")
 main()
+
