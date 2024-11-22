@@ -57,6 +57,7 @@ def play(bet_money,bet,initial):
             answer=input().lower()
         elif handvalue(playershand)==21:
             print("Congrats! You got 21!")
+            input("Press 'Enter' to see the dealer's hand")
             break
         else:
             check(playershand, dealershand,bet_money,bet,initial)
@@ -112,31 +113,27 @@ def handvalue(hand):
         totalvalue+=cardvalues(card)
     return totalvalue
 def betting(status,bet_money,bet,initial):
-    
     while bet_money!=0:
         if status=="w":
             restart=input("Do you want to go for another round? Yes or No: ").lower()
-            bet_money+=(bet*2)
+            bet_money+=bet
         elif status=="t":
             restart=input("Do you want to go for another round? Yes or No: ").lower()
-            bet_money += bet
         else:
-            restart = input("Do you want to go for another round? Yes or No: ").lower()
+            restart=input("Do you want to go for another round? Yes or No: ").lower()
             bet_money=bet_money-bet
         while restart!="yes" and restart!="y" and restart!="no" and restart!="n":
             restart = input("Make sure you typed everything properly."
                             "Do you want to go for another round? Yes or No: ").lower()
-        if bet_money!=0 and restart=="yes" or restart=="y":
+        if bet_money!=0 and (restart=="yes" or restart=="y"):
             main2(bet_money,initial)
-        elif bet_money!=0 and restart=="no" or restart=="n":
-            print("Thanks for playing!")
-            break
+            return
         else:
-            print("You can't bet if you don't have money!")
+            print("Thanks for playing!")
     if bet_money==0:
         print("Sorry you lost all your money! Better luck next time!")
     else:
-        print("You initially put in:",initial,"\n You now have:",bet_money)
+        print("You initially put in:",initial,"\nYou now have:",bet_money)
         if initial>bet_money:
             print("Sorry for your losses. Better luck next time")
         else:
