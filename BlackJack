@@ -3,7 +3,7 @@ suits=["Hearts","Diamonds","Spades","Clubs"]
 lists=["Ace","2","3","4","5","6","7","8","9","10","Jack","Queen","King"]
 deck=[(card, category) for category in suits for card in lists]
 
-def drawcard(x):
+def draw_card(x):
     return x.pop()
 
 def main():
@@ -18,27 +18,32 @@ def main():
     elif answer=="no" or answer=="n":
         print("Lets get started!")
     bet_money = eval(input("\nHow much money would you like to bring to the table?: "))
+    while bet_money<=0:
+        bet_money = eval(input("\nYou need to bring some amount. "
+                               "How much money would you like to bring to the table?: "))
     initial=bet_money
     main2(bet_money,initial)
 
 def main2(bet_money,initial):
     bet=eval(input("\nHow much money would you like bet?: "))
+    while bet<=0:
+        bet = eval(input("\nYou must bet something. How much money would you like bet?: "))
     while bet>bet_money:
         bet = eval(input("\nYou can't bet more than you put in. How much money would you like bet?: "))
     random.shuffle(deck)
     play(bet_money,bet,initial)
 
 def play(bet_money,bet,initial):
-    playershand=[]
-    dealershand=[]
+    players_hand=[]
+    dealers_hand=[]
 
     for x in range(2):
-        playershand.append(drawcard(deck))
-        dealershand.append(drawcard(deck))
-    print("\nPlayers hand: ", playershand)
-    print("You have: ",handvalue(playershand))
+        players_hand.append(draw_card(deck))
+        dealers_hand.append(draw_card(deck))
+    print("\nPlayers hand: ", players_hand)
+    print("You have: ", hand_value(players_hand))
     answer=""
-    if handvalue(playershand)==21:
+    if hand_value(players_hand)==21:
         input("Wow! Lucky! No need to hit! Press Enter to see the dealers hand!")
     else:
         print("Hit or Stand? ", end="")
@@ -48,39 +53,39 @@ def play(bet_money,bet,initial):
             answer = input().lower()
 
     while answer=="hit" or answer=="h":
-        drawcard(deck)
-        playershand.append(drawcard(deck))
-        print("You drew: ",playershand[-1])
-        print("You have: ",handvalue(playershand))
-        if handvalue(playershand)<21:
+        draw_card(deck)
+        players_hand.append(draw_card(deck))
+        print("You drew: ",players_hand[-1])
+        print("You have: ", hand_value(players_hand))
+        if hand_value(players_hand)<21:
             print("Hit or Stand? ", end="")
             answer=input().lower()
-        elif handvalue(playershand)==21:
+        elif hand_value(players_hand)==21:
             print("Congrats! You got 21!")
             input("Press 'Enter' to see the dealer's hand")
             break
         else:
-            check(playershand, dealershand,bet_money,bet,initial)
+            check(players_hand, dealers_hand,bet_money,bet,initial)
             return
     print("\nDealer's turn: ")
-    print("Dealer's hand: ",dealershand)
-    print("Dealer has: ",handvalue(dealershand))
+    print("Dealer's hand: ",dealers_hand)
+    print("Dealer has: ", hand_value(dealers_hand))
 
-    while handvalue(dealershand)<17:
-        drawcard(deck)
-        dealershand.append(drawcard(deck))
+    while hand_value(dealers_hand)<17:
+        draw_card(deck)
+        dealers_hand.append(draw_card(deck))
         print("Dealer had less than 17 and was required to draw another card.")
-        print("Dealer drew: ", dealershand[-1])
-        print("Dealer now has: ",handvalue(dealershand))
-    if handvalue(dealershand)>21:
+        print("Dealer drew: ", dealers_hand[-1])
+        print("Dealer now has: ", hand_value(dealers_hand))
+    if hand_value(dealers_hand)>21:
             print("The dealer has more than 21!")
-    if handvalue(dealershand)==21:
+    if hand_value(dealers_hand)==21:
             print("Oh no! The dealer has 21!")
-    check(playershand, dealershand,bet_money,bet,initial)
+    check(players_hand, dealers_hand,bet_money,bet,initial)
 
-def check(playershand,dealershand,bet_money,bet,initial):
-    phv=handvalue(playershand)
-    dhv=handvalue(dealershand)
+def check(players_hand, dealers_hand, bet_money, bet, initial):
+    phv=hand_value(players_hand)
+    dhv=hand_value(dealers_hand)
     if phv>dhv and phv<=21:
         print("\nCongrats! You beat the dealer!")
         status="w"
@@ -97,7 +102,7 @@ def check(playershand,dealershand,bet_money,bet,initial):
         print("\nYou pushed on the dealers hand so you keep your bet")
         status="t"
     betting(status,bet_money,bet,initial)
-def cardvalues(card):
+def card_values(card):
 
     if card[0] in ["Jack","Queen","King"]:
         value=10
@@ -107,11 +112,11 @@ def cardvalues(card):
         value=int(card[0])
     return value
 
-def handvalue(hand):
-    totalvalue=0
+def hand_value(hand):
+    total_value=0
     for card in hand:
-        totalvalue+=cardvalues(card)
-    return totalvalue
+        total_value+=card_values(card)
+    return total_value
 def betting(status,bet_money,bet,initial):
     while bet_money!=0:
         if status=="w":
@@ -130,12 +135,15 @@ def betting(status,bet_money,bet,initial):
             return
         else:
             print("Thanks for playing!")
+            break
     if bet_money==0:
         print("Sorry you lost all your money! Better luck next time!")
     else:
-        print("You initially put in:",initial,"\nYou now have:",bet_money)
+        print("You initially put in: $",initial,"\nYou now have: $",bet_money)
         if initial>bet_money:
-            print("Sorry for your losses. Better luck next time")
+            print("Sorry for your losses. Better luck next time!")
+        elif initial==bet_money:
+            print("Hey, you broke even! Not bad!")
         else:
             print("Congrats! Most people lose money but you didn't!")
 
