@@ -83,6 +83,23 @@ def play(bet_money,bet,initial):
             print("Oh no! The dealer has 21!")
     check(players_hand, dealers_hand,bet_money,bet,initial)
 
+def hand_value(hand):
+    total_value=0
+    num_aces=0
+    for card in hand:
+        if card[0] == "Ace":
+            total_value += 11  # Temporarily count Ace as 11
+            num_aces += 1
+        elif card[0] in ["King", "Queen", "Jack"]:
+            total_value += 10  # Face cards are worth 10
+        else:
+            total_value += int(card[0])  # Other cards are worth their face value
+        # Adjust for Aces if necessary (if total value exceeds 21, change Aces from 11 to 1)
+    while total_value > 21 and num_aces > 0:
+        total_value -= 10  # Change one Ace from 11 to 1
+        num_aces -= 1
+    return total_value
+
 def check(players_hand, dealers_hand, bet_money, bet, initial):
     phv=hand_value(players_hand)
     dhv=hand_value(dealers_hand)
@@ -103,24 +120,6 @@ def check(players_hand, dealers_hand, bet_money, bet, initial):
         status="t"
     betting(status,bet_money,bet,initial)
 
-def hand_value(hand):
-    total_value=0
-    num_aces=0
-    for card in hand:
-        if card[0] == "Ace":
-            total_value += 11  # Temporarily count Ace as 11
-            num_aces += 1
-        elif card[0] in ["King", "Queen", "Jack"]:
-            total_value += 10  # Face cards are worth 10
-        else:
-            total_value += int(card[0])  # Other cards are worth their face value
-        # Adjust for Aces if necessary (if total value exceeds 21, change Aces from 11 to 1)
-    while total_value > 21 and num_aces > 0:
-        total_value -= 10  # Change one Ace from 11 to 1
-        num_aces -= 1
-
-    return total_value
-
 def betting(status,bet_money,bet,initial):
     while bet_money!=0:
         if status=="w":
@@ -132,8 +131,8 @@ def betting(status,bet_money,bet,initial):
             restart=input("Do you want to go for another round? Yes or No: ").lower()
             bet_money=bet_money-bet
         while restart!="yes" and restart!="y" and restart!="no" and restart!="n":
-            restart = input("Make sure you typed everything properly."
-                            "Do you want to go for another round? Yes or No: ").lower()
+            restart = input("Make sure you typed everything properly." 
+                            " Do you want to go for another round? Yes or No: ").lower()
         if bet_money!=0 and (restart=="yes" or restart=="y"):
             main2(bet_money,initial)
             return
