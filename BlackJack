@@ -17,19 +17,21 @@ def main():
         instructions()
     elif answer=="no" or answer=="n":
         print("Lets get started!")
-    bet_money = eval(input("\nHow much money would you like to bring to the table?: "))
+    bet_money=eval(input("\nHow much money would you like to bring to the table?: "))
     while bet_money<=0:
-        bet_money = eval(input("\nYou need to bring some amount. "
-                               "How much money would you like to bring to the table?: "))
+        bet_money=eval(input("\nYou need to bring some amount. "
+        "How much money would you like to bring to the table?: "))
     initial=bet_money
     main2(bet_money,initial)
 
 def main2(bet_money,initial):
     bet=eval(input("\nHow much money would you like bet?: "))
     while bet<=0:
-        bet = eval(input("\nYou must bet something. How much money would you like bet?: "))
+        bet=eval(input("\nYou must bet something. How much money would you like bet?: "))
     while bet>bet_money:
-        bet = eval(input("\nYou can't bet more than you put in. How much money would you like bet?: "))
+        bet=eval(input("\nYou can't bet more than you put in. How much money would you like bet?: "))
+    global suits, lists, deck
+    deck=[(card, category) for category in suits for card in lists]
     random.shuffle(deck)
     play(bet_money,bet,initial)
 
@@ -83,6 +85,21 @@ def play(bet_money,bet,initial):
             print("Oh no! The dealer has 21!")
     check(players_hand, dealers_hand,bet_money,bet,initial)
 
+def card_values(card):
+    if card[0]in["Jack","Queen","King"]:
+        value=10
+    elif card[0]=="Ace":
+        value=11
+    else:
+        value=int(card[0])
+    return value
+
+def hand_value(hand):
+    total_value=0
+    for card in hand:
+        total_value+=card_values(card)
+    return total_value
+
 def check(players_hand, dealers_hand, bet_money, bet, initial):
     phv=hand_value(players_hand)
     dhv=hand_value(dealers_hand)
@@ -103,24 +120,6 @@ def check(players_hand, dealers_hand, bet_money, bet, initial):
         status="t"
     betting(status,bet_money,bet,initial)
 
-def hand_value(hand):
-    total_value=0
-    num_aces=0
-    for card in hand:
-        if card[0] == "Ace":
-            total_value += 11  # Temporarily count Ace as 11
-            num_aces += 1
-        elif card[0] in ["King", "Queen", "Jack"]:
-            total_value += 10  # Face cards are worth 10
-        else:
-            total_value += int(card[0])  # Other cards are worth their face value
-        # Adjust for Aces if necessary (if total value exceeds 21, change Aces from 11 to 1)
-    while total_value > 21 and num_aces > 0:
-        total_value -= 10  # Change one Ace from 11 to 1
-        num_aces -= 1
-
-    return total_value
-
 def betting(status,bet_money,bet,initial):
     while bet_money!=0:
         if status=="w":
@@ -137,11 +136,8 @@ def betting(status,bet_money,bet,initial):
         if bet_money!=0 and (restart=="yes" or restart=="y"):
             main2(bet_money,initial)
             return
-        elif bet_money!=0 and (restart=="no" or restart=="n"):
-            print("Thanks for playing!")
-            break
         else:
-            print("You can't! You are out of money!")
+            print("\nThanks for playing!")
             break
     if bet_money==0:
         print("Sorry you lost all your money! Better luck next time!")
